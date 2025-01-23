@@ -4,7 +4,6 @@ import os
 
 
 def detect_on_image(image_path, model_path='yolov8n.pt', save_output=True):
-    # Load Model YOLO
     model = YOLO(model_path)
 
  
@@ -38,7 +37,6 @@ def detect_on_video(video_path, model_path='yolov8n.pt', save_output=True):
         print("Error.")
         return
 
-    # Output Video (Opsional)
     if save_output:
         output_path = 'output_video.mp4'
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -47,28 +45,22 @@ def detect_on_video(video_path, model_path='yolov8n.pt', save_output=True):
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
 
-    # Proses Deteksi
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        # Deteksi dengan YOLO
         results = model.predict(source=frame, save=False, conf=0.5)
         annotated_frame = results[0].plot()
 
-        # Tampilkan Hasil di Jendela
         cv2.imshow('Deteksi Video', annotated_frame)
 
-        # Simpan Hasil ke Video Baru
         if save_output:
             out.write(annotated_frame)
 
-        # Tekan 'q' untuk keluar
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    # Bersihkan Resource
     cap.release()
     if save_output:
         out.release()
@@ -77,14 +69,13 @@ def detect_on_video(video_path, model_path='yolov8n.pt', save_output=True):
     if save_output:
         print(f"Hasil deteksi disimpan di {output_path}")
 
-# Fungsi Utama
 def main():
     print("Pilih mode input:")
     print("1. Gambar")
     print("2. Video")
     choice = input("Masukkan pilihan (1/2): ")
 
-    model_path = 'best.pt'  # Ganti dengan model terlatih jika diperlukan
+    model_path = 'best.pt'
 
     if choice == '1':
         image_path = input("Masukkan path gambar (contoh: path/to/image.jpg): ")
